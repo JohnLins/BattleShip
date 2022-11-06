@@ -13,16 +13,17 @@ CRGB leds[NUM_LEDS];
 
 
 
-
+CRGB last_value;
+int last_index;
 
 //////////////////////
-const int dataPin =8;
-const int clockPin =10;
-const int latchPin =9;
-const int digit0pin =2;
-const int digit1pin =3;
-const int digit2pin =4;
-const int digit3pin =5;
+#define dataPin 8
+#define clockPin 10
+#define latchPin 9
+#define digit0pin 2
+#define digit1pin 3
+#define digit2pin 4
+#define digit3pin 5
 int digit2segments []={
 0b00111111 , // d i g i t 0
 0b00000110 , // d i g i t 1
@@ -39,7 +40,14 @@ int digit2segments []={
 int cur_x = 0;
 int cur_y = 0;
 
-int xy_to_index(int x, int y){
+#define LEFT 0
+#define RIGHT 1
+
+
+
+bool active = LEFT;
+
+int xy_to_index(int x, int y, bool side){
   int index = 0; 
   
   if(y % 2 == 0){
@@ -48,6 +56,10 @@ int xy_to_index(int x, int y){
   }else {
     index += 16 * y + 15;
     index -= x;
+  }
+
+  if(side == RIGHT){
+    index += 256;
   }
 
   if(index >=0 && index < 256*2){
@@ -108,18 +120,78 @@ typedef struct Cord {
   CRGB color;
 } Cord;
 typedef struct Player {
-  //int score;
-  //Cord *shots;
-  Cord ships[6];//[3] = {(Cord){10,CRGB::Yellow}, (Cord){11,CRGB::Yellow}, (Cord){12,CRGB::Yellow}};
+  int ships[6];// = (int *)malloc(sizeof(int)*6);
+  int score;// = 0;
+  //Cord *shots;// = (Cord *)malloc(0);
+  Cord shots[5];
+  int num_shots;// = 0;
 } Player;
 
+Player left = (Player){{xy_to_index(1,0, LEFT),
+                xy_to_index(0,1, LEFT),
+                xy_to_index(0,2, LEFT),
+                xy_to_index(0,3, LEFT),
+                xy_to_index(0,4, LEFT),
+                xy_to_index(0,5, LEFT)}, 0, /*(Cord *)malloc(0)*/{0,0}, 0};
+Player right = (Player){{xy_to_index(1,0, RIGHT),
+                xy_to_index(0,1, RIGHT),
+                xy_to_index(0,2, RIGHT),
+                xy_to_index(0,3, RIGHT),
+                xy_to_index(0,4, RIGHT),
+                xy_to_index(0,5, RIGHT)}, 0, /*(Cord *)malloc(0)*/{0,0}, 0};
 
+void plus_score(bool active){
+  if(active == LEFT){
+    left.score++;
+  } else {
+    right.score++;
+  }
+}
 
+void add_shot(bool active, int index, bool hit){
+  Serial.print("......\n");
+Serial.print(hit);
+  Serial.print("......\n");
+if(active == LEFT){
+  left.num_shots++;
+  
+  //left.shots = (Cord *)realloc(left.shots, sizeof(Cord)*left.num_shots);
+  
+  if(hit){
+      left.shots[left.num_shots-1] = Cord{index, CRGB::Red};
+  } else{
+      left.shots[left.num_shots-1] = Cord{index, CRGB::Green};
+    }
+} else {
+  right.num_shots++;
+  //right.shots = (Cord *)realloc(right.shots, sizeof(Cord)*right.num_shots);
+
+  if(hit){
+      right.shots[right.num_shots-1] = Cord{index+256, CRGB::Red};
+  } else{
+      right.shots[right.num_shots-1] = Cord{index+256, CRGB::Green};
+    }
+}
+}
+  
 
 
 Joy joy = (Joy){0,0,0};
 
 void setup(){
+  
+//left.ships = {xy_to_index(1,0, LEFT),
+//xy_to_index(0,1, LEFT),
+//xy_to_index(0,2, LEFT),
+//xy_to_index(0,3, LEFT),
+//xy_to_index(0,4, LEFT),
+//xy_to_index(0,5, LEFT)};
+//
+//
+//right.ships   = ;
+
+
+  
  
   pinMode(buzzer, OUTPUT); // Set buzzer - pin 9 as an output
 
@@ -144,16 +216,7 @@ void setup(){
   pinMode ( digit3pin , OUTPUT );
 
 }
-Player left = {{Cord{xy_to_index(1,0),CRGB::Yellow},
-Cord{xy_to_index(0,1),CRGB::Yellow},
-Cord{xy_to_index(0,2),CRGB::Yellow},
-Cord{xy_to_index(0,3),CRGB::Yellow},
-Cord{xy_to_index(0,4),CRGB::Yellow},
-Cord{xy_to_index(0,5),CRGB::Yellow}}};
-//left.score = 0;
-//left.ships = ;
-//Player right;
-//right.score = 0;
+
 void loop(){
 
   int value  = 1000;
@@ -166,29 +229,72 @@ void loop(){
   temp = (value/1000)%10; 
   writeDigit ( temp,3);
 
+if(active == LEFT){
+  for(int i = 256; i < 256*2;i++){
+    leds[i] = CRGB::Blue;
+  }
+  for(int i = 0; i < 256; i++){
+    leds[i] = 0x000000;
+  }
+  for(int i = 0; i < 6; i++){
+    leds[right.ships[i]] = 0xFFA500;
+  }
+  for(int i = 0; i < left.num_shots/*sizeof(right.shots)/sizeof(Cord)*/; i++){
+    Serial.print(":");
+    Serial.print(right.shots[i].index);
+    leds[left.shots[i].index] = left.shots[i].color;
+  } Serial.print("\n");
+  
+} else {
   for(int i = 0; i < 256;i++){
     leds[i] = CRGB::Blue;
-  
   }
-   for(int i = 256; i < 256*2;i++){
-    leds[i] = CRGB::Red;
+  for(int i = 256; i < 256*2; i++){
+    leds[i] = 0x000000;
   }
-
   for(int i = 0; i < 6; i++){
-    leds[left.ships[i].index] = left.ships[i].color;
+    leds[left.ships[i]] = 0xFFA500;
   }
+  for(int i = 0; i < right.num_shots/*sizeof(right.shots)/sizeof(Cord)*/; i++){
+    Serial.print(":");
+    Serial.print(right.shots[i].index);
+    leds[right.shots[i].index] = right.shots[i].color;
+  } Serial.print("\n");
+  
+}
 
-  //leds[xy_to_index(3, 5)] = CRGB::Yellow;
+  
+
 
   if(joy.fire){
-    leds[xy_to_index(cur_x,cur_y)] = CRGB::Green;
-  } else {
-    leds[xy_to_index(cur_x,cur_y)] = CRGB::Red;
-  }
-  Serial.print("-----");
-  Serial.print(cur_x);
-  Serial.print(cur_y);
+    for(int i = 0; i < 5000; i++){
+  tone(buzzer, 2000);
+    }
+    noTone(buzzer);
+
+    if(leds[xy_to_index(cur_x, cur_y, !active)] == (CRGB)(0xFFA500)){
+      Serial.print("SHOT");
+      plus_score(active);
+      add_shot(active, xy_to_index(cur_x, cur_y, active), 1); 
+      
+      
+    }else {
+      add_shot(active, xy_to_index(cur_x, cur_y, active), 0); 
+      Serial.print("MISS");
+    }
+    
+  active = !active;
+  } 
   
+  else {
+    leds[last_index] = last_value;
+    last_value = leds[xy_to_index(cur_x,cur_y, active)];
+    last_index = xy_to_index(cur_x,cur_y, active);
+    
+    leds[last_index] = CRGB::Red;
+    
+  }
+ 
    FastLED.show();
 
 
@@ -197,19 +303,6 @@ void loop(){
   joy.y = analogRead(Y_JOY);
   joy.fire = !digitalRead(SW_JOY);
 
-  Serial.print("X left: ");
-  Serial.print(joy.x);
-  Serial.print("\n");
-  
-  Serial.print("Y left: ");
-  Serial.print(joy.y);
-  Serial.print("\n");
-  
-
-  
-  Serial.print("FIRE: ");
-  Serial.print(joy.fire);
-  Serial.print("\n");
 
 //     for(int i = 0; i < 30000; i++){
 //    
@@ -231,10 +324,10 @@ void loop(){
     }
 
 
-    if(joy.y > 600/* && cur_y < 7*/) {cur_y --; /*render[cursor.x][cursor.y-1] = already_on; */}
-    if(joy.y < 400/* && cur_y > 0*/) {cur_y ++; /*render[cursor.x][cursor.y+1] = already_on; */}
-    if(joy.x > 600/* && cur_x < 7*/) {cur_x ++; /*render[cursor.x-1][cursor.y] = already_on; */}
-    if(joy.x < 400/* && cur_x > 0*/) {cur_x --; /*render[cursor.x+1][cursor.y] = already_on; */}
+    if(joy.y > 600 && cur_y > 0) {cur_y --; /*render[cursor.x][cursor.y-1] = already_on; */}
+    if(joy.y < 400 && cur_y < 15) {cur_y ++; /*render[cursor.x][cursor.y+1] = already_on; */}
+    if(joy.x > 600 && cur_x < 15) {cur_x ++; /*render[cursor.x-1][cursor.y] = already_on; */}
+    if(joy.x < 400 && cur_x > 0) {cur_x --; /*render[cursor.x+1][cursor.y] = already_on; */}
 //  
 
   
