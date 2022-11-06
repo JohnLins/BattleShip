@@ -101,17 +101,17 @@ typedef struct Joy {
 } Joy;
 
 
-//typedef struct Player {
-//  int x;
-//  int y;
-//}
+
 
 typedef struct Cord {
   int index;
   CRGB color;
 } Cord;
-
-Cord ships[3] = {(Cord){10,CRGB::Yellow}, (Cord){11,CRGB::Yellow}, (Cord){12,CRGB::Yellow}};
+typedef struct Player {
+  //int score;
+  //Cord *shots;
+  Cord ships[6];//[3] = {(Cord){10,CRGB::Yellow}, (Cord){11,CRGB::Yellow}, (Cord){12,CRGB::Yellow}};
+} Player;
 
 
 
@@ -144,11 +144,19 @@ void setup(){
   pinMode ( digit3pin , OUTPUT );
 
 }
-
+Player left = {{Cord{xy_to_index(1,0),CRGB::Yellow},
+Cord{xy_to_index(0,1),CRGB::Yellow},
+Cord{xy_to_index(0,2),CRGB::Yellow},
+Cord{xy_to_index(0,3),CRGB::Yellow},
+Cord{xy_to_index(0,4),CRGB::Yellow},
+Cord{xy_to_index(0,5),CRGB::Yellow}}};
+//left.score = 0;
+//left.ships = ;
+//Player right;
+//right.score = 0;
 void loop(){
 
-
-   int value  = 1000;
+  int value  = 1000;
   int temp = value % 10;
   writeDigit ( temp,0);
   temp = (value/10)%10; 
@@ -166,11 +174,11 @@ void loop(){
     leds[i] = CRGB::Red;
   }
 
-  for(int i = 0; i < 3; i++){
-    leds[ships[i].index] = ships[i].color;
+  for(int i = 0; i < 6; i++){
+    leds[left.ships[i].index] = left.ships[i].color;
   }
 
-  leds[xy_to_index(3, 5)] = CRGB::Yellow;
+  //leds[xy_to_index(3, 5)] = CRGB::Yellow;
 
   if(joy.fire){
     leds[xy_to_index(cur_x,cur_y)] = CRGB::Green;
