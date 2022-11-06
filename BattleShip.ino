@@ -13,6 +13,8 @@ CRGB leds[NUM_LEDS];
 
 
 
+
+
 //////////////////////
 const int dataPin =8;
 const int clockPin =10;
@@ -87,6 +89,13 @@ typedef struct Joy {
 //  int y;
 //}
 
+typedef struct Cord {
+  int index;
+  CRGB color;
+} Cord;
+
+Cord ships[3] = {(Cord){10,CRGB::Yellow}, (Cord){11,CRGB::Yellow}, (Cord){12,CRGB::Yellow}};
+
 int cur_x = 0;
 int cur_y = 0;
 
@@ -139,7 +148,10 @@ void loop(){
   }
    for(int i = 256; i < 256*2;i++){
     leds[i] = CRGB::Red;
-  
+  }
+
+  for(int i = 0; i < 3; i++){
+    leds[ships[i].index] = ships[i].color;
   }
 
   if(joy.fire){
