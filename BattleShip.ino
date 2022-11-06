@@ -36,8 +36,25 @@ int digit2segments []={
 0b01101111 }; // d i g i t 9
 
 
+int cur_x = 0;
+int cur_y = 0;
+
 int xy_to_index(int x, int y){
-  return x*16 + y;
+  int index = 0; 
+  
+  if(y % 2 == 0){
+    index += 16 * y;
+    index += x;
+  }else {
+    index += 16 * y + 15;
+    index -= x;
+  }
+
+  if(index >=0 && index < 256*2){
+    return index;
+  }
+  
+  return 0;
 
 }
 
@@ -96,8 +113,7 @@ typedef struct Cord {
 
 Cord ships[3] = {(Cord){10,CRGB::Yellow}, (Cord){11,CRGB::Yellow}, (Cord){12,CRGB::Yellow}};
 
-int cur_x = 0;
-int cur_y = 0;
+
 
 
 
@@ -154,6 +170,8 @@ void loop(){
     leds[ships[i].index] = ships[i].color;
   }
 
+  leds[xy_to_index(3, 5)] = CRGB::Yellow;
+
   if(joy.fire){
     leds[xy_to_index(cur_x,cur_y)] = CRGB::Green;
   } else {
@@ -205,8 +223,8 @@ void loop(){
     }
 
 
-    if(joy.y > 600/* && cur_y < 7*/) {cur_y ++; /*render[cursor.x][cursor.y-1] = already_on; */}
-    if(joy.y < 400/* && cur_y > 0*/) {cur_y --; /*render[cursor.x][cursor.y+1] = already_on; */}
+    if(joy.y > 600/* && cur_y < 7*/) {cur_y --; /*render[cursor.x][cursor.y-1] = already_on; */}
+    if(joy.y < 400/* && cur_y > 0*/) {cur_y ++; /*render[cursor.x][cursor.y+1] = already_on; */}
     if(joy.x > 600/* && cur_x < 7*/) {cur_x ++; /*render[cursor.x-1][cursor.y] = already_on; */}
     if(joy.x < 400/* && cur_x > 0*/) {cur_x --; /*render[cursor.x+1][cursor.y] = already_on; */}
 //  
