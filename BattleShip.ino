@@ -5,7 +5,7 @@
 
 CRGB leds[NUM_LEDS];
  
-#define buzzer 7 //buzzer to arduino pin 9
+#define buzzer 7 
 
 #define X_JOY A0
 #define Y_JOY A1
@@ -13,8 +13,12 @@ CRGB leds[NUM_LEDS];
 
 
 
+
 CRGB last_value;
 int last_index;
+
+CRGB last_value_inactive;
+int last_index_inactive;
 
 //////////////////////
 #define dataPin 8
@@ -47,6 +51,21 @@ int cur_y = 0;
 
 bool active = LEFT;
 
+
+void fill_side(bool side, CRGB color){
+
+  int start = 0;
+  if(side == RIGHT){
+    start = 256;
+  }
+
+  for(int i = start; i < start + 256; i++){
+      leds[i] = color;
+    
+  }
+  
+}
+
 int xy_to_index(int x, int y, bool side){
   int index = 0; 
   
@@ -74,32 +93,28 @@ int xy_to_index(int x, int y, bool side){
 
 void writeDigit ( int value , int digit )
 {
-    // t u r n o f f a l l d i g i t s
     digitalWrite ( digit0pin , HIGH );
     digitalWrite ( digit1pin , HIGH );
     digitalWrite ( digit2pin , HIGH );
     digitalWrite ( digit3pin , HIGH );
-    // w r i t e d a t a t o s h i f t r e g i s t e r
     digitalWrite ( latchPin , LOW );
     shiftOut ( dataPin , clockPin , MSBFIRST , digit2segments [ value ]);
     digitalWrite ( latchPin , HIGH );
-    // t u r n o n o n l y t h e d e s i r e d d i g i t
     switch ( digit ) {
-    case 0:
-    digitalWrite ( digit0pin , LOW );
-    break ;
-    case 1:
-    digitalWrite ( digit1pin , LOW );
-    break ;
-    case 2:
-    digitalWrite ( digit2pin , LOW );
-    break ;
-    case 3:
-    digitalWrite ( digit3pin , LOW );
-    break ;
+      case 0:
+      digitalWrite ( digit0pin , LOW );
+      break ;
+      case 1:
+      digitalWrite ( digit1pin , LOW );
+      break ;
+      case 2:
+      digitalWrite ( digit2pin , LOW );
+      break ;
+      case 3:
+      digitalWrite ( digit3pin , LOW );
+      break ;
     }
-    // k e e p d i g i t o n f o r 1 0 m i l l i s e c o n d s
-    delay (5);
+    delay (10);
 }
 
 
@@ -123,7 +138,7 @@ typedef struct Player {
   int ships[6];// = (int *)malloc(sizeof(int)*6);
   int score;// = 0;
   //Cord *shots;// = (Cord *)malloc(0);
-  Cord shots[5];
+  Cord shots[20];
   int num_shots;// = 0;
 } Player;
 
@@ -167,9 +182,9 @@ if(active == LEFT){
   //right.shots = (Cord *)realloc(right.shots, sizeof(Cord)*right.num_shots);
 
   if(hit){
-      right.shots[right.num_shots-1] = Cord{index+256, CRGB::Red};
+      right.shots[right.num_shots-1] = Cord{index, CRGB::Red};
   } else{
-      right.shots[right.num_shots-1] = Cord{index+256, CRGB::Green};
+      right.shots[right.num_shots-1] = Cord{index, CRGB::Green};
     }
 }
 }
@@ -179,6 +194,9 @@ if(active == LEFT){
 Joy joy = (Joy){0,0,0};
 
 void setup(){
+
+
+   
   
 //left.ships = {xy_to_index(1,0, LEFT),
 //xy_to_index(0,1, LEFT),
@@ -215,20 +233,28 @@ void setup(){
   pinMode ( digit2pin , OUTPUT );
   pinMode ( digit3pin , OUTPUT );
 
+
+
+
+
 }
+
 
 void loop(){
 
-  int value  = 1000;
-  int temp = value % 10;
-  writeDigit ( temp,0);
-  temp = (value/10)%10; 
-  writeDigit ( temp,1);
-  temp = (value/100)%10; 
-  writeDigit ( temp,2);
-  temp = (value/1000)%10; 
-  writeDigit ( temp,3);
 
+int t = left.score * 100 + right.score;
+int value;
+value = t % 10; 
+writeDigit (value ,3);
+value = (t / 10) % 10; 
+writeDigit (value ,2);
+value = (t / 100) % 10; 
+writeDigit (value ,1);
+value = (t / 1000) % 10; 
+writeDigit (value ,0);
+
+  
 if(active == LEFT){
   for(int i = 256; i < 256*2;i++){
     leds[i] = CRGB::Blue;
@@ -240,10 +266,8 @@ if(active == LEFT){
     leds[right.ships[i]] = 0xFFA500;
   }
   for(int i = 0; i < left.num_shots/*sizeof(right.shots)/sizeof(Cord)*/; i++){
-    Serial.print(":");
-    Serial.print(right.shots[i].index);
-    leds[left.shots[i].index] = left.shots[i].color;
-  } Serial.print("\n");
+    leds[left.shots[i].index]/*, leds[left.shots[i].index+256]*/ = left.shots[i].color;
+  } 
   
 } else {
   for(int i = 0; i < 256;i++){
@@ -256,10 +280,8 @@ if(active == LEFT){
     leds[left.ships[i]] = 0xFFA500;
   }
   for(int i = 0; i < right.num_shots/*sizeof(right.shots)/sizeof(Cord)*/; i++){
-    Serial.print(":");
-    Serial.print(right.shots[i].index);
-    leds[right.shots[i].index] = right.shots[i].color;
-  } Serial.print("\n");
+    leds[right.shots[i].index]/*, leds[right.shots[i].index - 256]*/  = right.shots[i].color;
+  } 
   
 }
 
@@ -267,32 +289,48 @@ if(active == LEFT){
 
 
   if(joy.fire){
-    for(int i = 0; i < 5000; i++){
-  tone(buzzer, 2000);
-    }
-    noTone(buzzer);
-
     if(leds[xy_to_index(cur_x, cur_y, !active)] == (CRGB)(0xFFA500)){
       Serial.print("SHOT");
       plus_score(active);
       add_shot(active, xy_to_index(cur_x, cur_y, active), 1); 
       
-      
+        for(int i = 0; i < 5000; i++){
+          tone(buzzer, 2000);
+        }
+        noTone(buzzer);
     }else {
       add_shot(active, xy_to_index(cur_x, cur_y, active), 0); 
       Serial.print("MISS");
     }
     
   active = !active;
+  cur_x = 0;
+  cur_y = 0;
   } 
   
   else {
     leds[last_index] = last_value;
     last_value = leds[xy_to_index(cur_x,cur_y, active)];
     last_index = xy_to_index(cur_x,cur_y, active);
+    leds[last_index] = (CRGB)(0xFFFFFF);
+
+    leds[last_index_inactive] = last_value_inactive;
+    last_value_inactive = leds[xy_to_index(cur_x,cur_y, !active)];
+    last_index_inactive = xy_to_index(cur_x,cur_y, !active);
+    leds[last_index_inactive] = (CRGB)(0xFFFFFF);
     
-    leds[last_index] = CRGB::Red;
-    
+  }
+
+
+  
+  if(right.score == 10 || left.score == 10){
+     for(int i = 0; i < 5000; i++){
+          tone(buzzer, 2000);
+        }
+        noTone(buzzer);
+    fill_side(!active, CRGB::Red);
+    fill_side(active, CRGB::Green);
+   
   }
  
    FastLED.show();
