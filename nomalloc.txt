@@ -2,7 +2,6 @@
 
 #define NUM_LEDS (256*2)
 #define LED_PIN 11
-#define NUM_SHIP_PIX 22
 
 CRGB leds[NUM_LEDS];
  
@@ -136,57 +135,25 @@ typedef struct Cord {
   CRGB color;
 } Cord;
 typedef struct Player {
-  int ships[NUM_SHIP_PIX];// = (int *)malloc(sizeof(int)*6);
+  int ships[6];// = (int *)malloc(sizeof(int)*6);
   int score;// = 0;
   //Cord *shots;// = (Cord *)malloc(0);
   Cord shots[20];
   int num_shots;// = 0;
 } Player;
 
-Player left = (Player){{xy_to_index(0,1, LEFT),
-                          xy_to_index(0,2, LEFT),
-                          xy_to_index(0,3, LEFT),
-                          xy_to_index(0,4, LEFT),
-                          xy_to_index(0,5, LEFT),
-                          xy_to_index(2,9, LEFT),
-                          xy_to_index(2,10, LEFT),
-                          xy_to_index(2,11, LEFT),
-                          xy_to_index(2,12, LEFT),
-                          xy_to_index(5,8, LEFT),
-                          xy_to_index(6,8, LEFT),
-                          xy_to_index(7,8, LEFT),
-                          xy_to_index(7,0, LEFT),
-                          xy_to_index(8,0, LEFT),
-                          xy_to_index(9,0, LEFT),
-                          xy_to_index(11,3, LEFT),
-                          xy_to_index(11,4, LEFT),
-                          xy_to_index(12,12, LEFT),
-                          xy_to_index(13,12, LEFT),
-                          xy_to_index(14,12, LEFT),
-                          xy_to_index(14,13, LEFT),
-                          xy_to_index(14,14, LEFT)}, 0, /*(Cord *)malloc(0)*/{0,0}, 0};
-Player right = (Player){{xy_to_index(0,6, RIGHT),
-xy_to_index(1,6, RIGHT),
-xy_to_index(2,6, RIGHT),
-xy_to_index(1,0, RIGHT),
-xy_to_index(1,1, RIGHT),
-xy_to_index(4,13, RIGHT),
-xy_to_index(5,13, RIGHT),
-xy_to_index(6,13, RIGHT),
-xy_to_index(5,12, RIGHT),
-xy_to_index(5,11, RIGHT),
-xy_to_index(8,9, RIGHT),
-xy_to_index(8,10, RIGHT),
-xy_to_index(8,11, RIGHT),
-xy_to_index(8,12, RIGHT),
-xy_to_index(12,11, RIGHT),
-xy_to_index(12,12, RIGHT),
-xy_to_index(12,13, RIGHT),
-xy_to_index(10,2, RIGHT),
-xy_to_index(11,2, RIGHT),
-xy_to_index(12,2, RIGHT),
-xy_to_index(13,2, RIGHT),
-xy_to_index(14,2, RIGHT)}, 0, /*(Cord *)malloc(0)*/{0,0}, 0};
+Player left = (Player){{xy_to_index(1,0, LEFT),
+                        xy_to_index(0,1, LEFT),
+                        xy_to_index(0,2, LEFT),
+                        xy_to_index(0,3, LEFT),
+                        xy_to_index(0,4, LEFT),
+                        xy_to_index(0,5, LEFT)}, 0, /*(Cord *)malloc(0)*/{0,0}, 0};
+Player right = (Player){{xy_to_index(1,0, RIGHT),
+                        xy_to_index(0,1, RIGHT),
+                        xy_to_index(0,2, RIGHT),
+                        xy_to_index(0,3, RIGHT),
+                        xy_to_index(0,4, RIGHT),
+                        xy_to_index(0,5, RIGHT)}, 0, /*(Cord *)malloc(0)*/{0,0}, 0};
 
 void plus_score(bool active){
   if(active == LEFT){
@@ -295,7 +262,7 @@ if(active == LEFT){
   for(int i = 0; i < 256; i++){
     leds[i] = 0x000000;
   }
-  for(int i = 0; i < NUM_SHIP_PIX; i++){
+  for(int i = 0; i < 6; i++){
     leds[right.ships[i]] = 0xFFA500;
   }
   for(int i = 0; i < left.num_shots/*sizeof(right.shots)/sizeof(Cord)*/; i++){
@@ -309,7 +276,7 @@ if(active == LEFT){
   for(int i = 256; i < 256*2; i++){
     leds[i] = 0x000000;
   }
-  for(int i = 0; i < NUM_SHIP_PIX; i++){
+  for(int i = 0; i < 6; i++){
     leds[left.ships[i]] = 0xFFA500;
   }
   for(int i = 0; i < right.num_shots/*sizeof(right.shots)/sizeof(Cord)*/; i++){
@@ -404,6 +371,6 @@ if(active == LEFT){
   
  
 
-delay(100);
- 
+
+  delay(200);
 }
