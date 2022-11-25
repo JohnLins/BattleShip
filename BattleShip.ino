@@ -143,52 +143,267 @@ typedef struct Player {
   Cord shots[20];
   int num_shots;
 } Player;
+Player randomize_player_ship_layout(bool side) {
+switch (random(10))
+{
+case 0:
+  return (Player){{xy_to_index(0,1, side),
+  xy_to_index(0,2, side),
+  xy_to_index(0,3, side),
+  xy_to_index(0,4, side),
+  xy_to_index(0,5, side),
+  xy_to_index(2,9, side),
+  xy_to_index(2,10, side),
+  xy_to_index(2,11, side),
+  xy_to_index(2,12, side),
+  xy_to_index(5,8, side),
+  xy_to_index(6,8, side),
+  xy_to_index(7,8, side),
+  xy_to_index(7,0, side),
+  xy_to_index(8,0, side),
+  xy_to_index(9,0, side),
+  xy_to_index(11,3, side),
+  xy_to_index(11,4, side),
+  xy_to_index(12,12, side),
+  xy_to_index(13,12, side),
+  xy_to_index(14,12, side),
+  xy_to_index(14,13, side),
+  xy_to_index(14,14, side)},0,{0,0},0};
+  break;
+case 1:
+  return (Player) {{xy_to_index(1,0, side),
+  xy_to_index(2,0, side),
+  xy_to_index(3,0, side),
+  xy_to_index(4,0, side),
+  xy_to_index(3,8, side),
+  xy_to_index(3,9, side),
+  xy_to_index(4,14, side),
+  xy_to_index(5,14, side),
+  xy_to_index(6,14, side),
+  xy_to_index(6,13, side),
+  xy_to_index(6,12, side),
+  xy_to_index(7,2, side),
+  xy_to_index(8,2, side),
+  xy_to_index(9,2, side),
+  xy_to_index(11,14, side),
+  xy_to_index(11,13, side),
+  xy_to_index(11,12, side),
+  xy_to_index(15,8, side),
+  xy_to_index(15,9, side),
+  xy_to_index(15,10, side),
+  xy_to_index(15,11, side),
+  xy_to_index(15,12, side)},0,{0,0},0};
+  break;
+case 2:
+  /* code */
+  return (Player){{xy_to_index(0,13, side),
+  xy_to_index(0,14, side),
+  xy_to_index(0,15, side),
+  xy_to_index(1,15, side),
+  xy_to_index(2,15, side),
+  xy_to_index(1,0, side),
+  xy_to_index(2,0, side),
+  xy_to_index(3,8, side),
+  xy_to_index(4,8, side),
+  xy_to_index(5,8, side),
+  xy_to_index(6,8, side),
+  xy_to_index(8,12, side),
+  xy_to_index(8,13, side),
+  xy_to_index(8,14, side),
+  xy_to_index(11,4, side),
+  xy_to_index(11,5, side),
+  xy_to_index(11,6, side),
+  xy_to_index(15,15, side),
+  xy_to_index(15,14, side),
+  xy_to_index(15,13, side),
+  xy_to_index(15,12, side),
+  xy_to_index(15,11, side)},0,{0,0},0};
+  break;
+case 3:
+  return (Player){{
+  xy_to_index(2,5, side),
+  xy_to_index(2,6, side),
+  xy_to_index(2,7, side),
+  xy_to_index(3,5, side),
+  xy_to_index(4,5, side),
+  xy_to_index(10,9, side),
+  xy_to_index(10,10, side),
+  xy_to_index(10,11, side),
+  xy_to_index(10,12, side),
+  xy_to_index(10,13, side),
+  xy_to_index(5,12, side),
+  xy_to_index(5,13, side),
+  xy_to_index(5,14, side),
+  xy_to_index(6,4, side),
+  xy_to_index(7,4, side),
+  xy_to_index(10,1, side),
+  xy_to_index(11,1, side),
+  xy_to_index(12,1, side),
+  xy_to_index(12,7, side),
+  xy_to_index(13,7, side),
+  xy_to_index(14,7, side),
+  xy_to_index(15,7, side)},0,{0,0},0};
+  break;
+case 4:
+  return (Player){{
+  xy_to_index(1,12, side),
+  xy_to_index(1,13, side),
+  xy_to_index(1,3, side),
+  xy_to_index(2,3, side),
+  xy_to_index(3,3, side),
+  xy_to_index(5,8, side),
+  xy_to_index(6,8, side),
+  xy_to_index(7,8, side),
+  xy_to_index(7,9, side),
+  xy_to_index(7,10, side),
+  xy_to_index(11,11, side),
+  xy_to_index(11,12, side),
+  xy_to_index(11,13, side),
+  xy_to_index(11,14, side),
+  xy_to_index(11,15, side),
+  xy_to_index(10,1, side),
+  xy_to_index(11,1, side),
+  xy_to_index(12,1, side),
+  xy_to_index(12,6, side),
+  xy_to_index(13,6, side),
+  xy_to_index(14,6, side),
+  xy_to_index(15,6, side)},0,{0,0},0};
+  break;
+case 5:
+  return  (Player){{
+  xy_to_index(0,0, side),
+  xy_to_index(1,0, side),
+  xy_to_index(2,0, side),
+  xy_to_index(3,0, side),
+  xy_to_index(15,0, side),
+  xy_to_index(15,1, side),
+  xy_to_index(15,2, side),
+  xy_to_index(15,3, side),
+  xy_to_index(15,4, side),
+  xy_to_index(9,5, side),
+  xy_to_index(9,6, side),
+  xy_to_index(1,11, side),
+  xy_to_index(1,10, side),
+  xy_to_index(1,12, side),
+  xy_to_index(2,12, side),
+  xy_to_index(3,12, side),
+  xy_to_index(6,12, side),
+  xy_to_index(7,12, side),
+  xy_to_index(8,12, side),
+  xy_to_index(10,15, side),
+  xy_to_index(11,15, side),
+  xy_to_index(12,15, side)},0,{0,0},0};
+  break;
+case 6:
+  return (Player){{ xy_to_index(0,6, side),
+  xy_to_index(1,6, side),
+  xy_to_index(2,6, side),
+  xy_to_index(1,0, side),
+  xy_to_index(1,1, side),
+  xy_to_index(4,13, side),
+  xy_to_index(5,13, side),
+  xy_to_index(6,13, side),
+  xy_to_index(5,12, side),
+  xy_to_index(5,11, side),
+  xy_to_index(8,9, side),
+  xy_to_index(8,10, side),
+  xy_to_index(8,11, side),
+  xy_to_index(8,12, side),
+  xy_to_index(12,11, side),
+  xy_to_index(12,12, side),
+  xy_to_index(12,13, side),
+  xy_to_index(10,2, side),
+  xy_to_index(11,2, side),
+  xy_to_index(12,2, side),
+  xy_to_index(13,2, side),
+  xy_to_index(14,2, side)},0,{0,0},0};
+  break;
+case 7:
+  /* code */
+  return (Player){{
+  xy_to_index(0,0, side),
+  xy_to_index(0,1, side),
+  xy_to_index(0,2, side),
+  xy_to_index(0,3, side),
+  xy_to_index(0,4, side),
+  xy_to_index(3,8, side),
+  xy_to_index(4,8, side),
+  xy_to_index(5,8, side),
+  xy_to_index(0,15, side),
+  xy_to_index(1,15, side),
+  xy_to_index(2,15, side),
+  xy_to_index(8,8, side),
+  xy_to_index(8,7, side),
+  xy_to_index(8,6, side),
+  xy_to_index(9,6, side),
+  xy_to_index(10,6, side),
+  xy_to_index(15,15, side),
+  xy_to_index(14,15, side),
+  xy_to_index(13,15, side),
+  xy_to_index(12,15, side),
+  xy_to_index(15,0, side),
+  xy_to_index(14,0, side)},0,{0,0},0};
+  break;
+case 8:
+  /* code */
+  return  (Player){{
+  xy_to_index(1,11, side),
+  xy_to_index(1,12, side),
+  xy_to_index(1,13, side),
+  xy_to_index(1,14, side),
+  xy_to_index(2,2, side),
+  xy_to_index(2,3, side),
+  xy_to_index(2,4, side),
+  xy_to_index(5,11, side),
+  xy_to_index(5,12, side),
+  xy_to_index(5,13, side),
+  xy_to_index(4,13, side),
+  xy_to_index(3,13, side),
+  xy_to_index(9,2, side),
+  xy_to_index(9,3, side),
+  xy_to_index(9,4, side),
+  xy_to_index(10,11, side),
+  xy_to_index(11,11, side),
+  xy_to_index(11,4, side),
+  xy_to_index(12,4, side),
+  xy_to_index(13,4, side),
+  xy_to_index(14,4, side),
+  xy_to_index(15,4, side)},0,{0,0},0};
+  break;
+case 9:
+  /* code */
+  return (Player){{
+  xy_to_index(1,3, side),
+  xy_to_index(1,4, side),
+  xy_to_index(1,5, side),
+  xy_to_index(3,0, side),
+  xy_to_index(3,1, side),
+  xy_to_index(3,2, side),
+  xy_to_index(3,3, side),
+  xy_to_index(3,4, side),
+  xy_to_index(9,11, side),
+  xy_to_index(9,12, side),
+  xy_to_index(9,13, side),
+  xy_to_index(8,13, side),
+  xy_to_index(7,13, side),
+  xy_to_index(6,3, side),
+  xy_to_index(7,3, side),
+  xy_to_index(1,13, side),
+  xy_to_index(2,13, side),
+  xy_to_index(3,13, side),
+  xy_to_index(11,5, side),
+  xy_to_index(12,5, side),
+  xy_to_index(13,5, side),
+  xy_to_index(14,5, side)},0,{0,0},0};
+  break;
 
-Player left = (Player){{xy_to_index(0,1, LEFT),
-                          xy_to_index(0,2, LEFT),
-                          xy_to_index(0,3, LEFT),
-                          xy_to_index(0,4, LEFT),
-                          xy_to_index(0,5, LEFT),
-                          xy_to_index(2,9, LEFT),
-                          xy_to_index(2,10, LEFT),
-                          xy_to_index(2,11, LEFT),
-                          xy_to_index(2,12, LEFT),
-                          xy_to_index(5,8, LEFT),
-                          xy_to_index(6,8, LEFT),
-                          xy_to_index(7,8, LEFT),
-                          xy_to_index(7,0, LEFT),
-                          xy_to_index(8,0, LEFT),
-                          xy_to_index(9,0, LEFT),
-                          xy_to_index(11,3, LEFT),
-                          xy_to_index(11,4, LEFT),
-                          xy_to_index(12,12, LEFT),
-                          xy_to_index(13,12, LEFT),
-                          xy_to_index(14,12, LEFT),
-                          xy_to_index(14,13, LEFT),
-                          xy_to_index(14,14, LEFT)}, 0, /*(Cord *)malloc(0)*/{0,0}, 0};
-Player right = (Player){{ xy_to_index(0,6, RIGHT),
-                          xy_to_index(1,6, RIGHT),
-                          xy_to_index(2,6, RIGHT),
-                          xy_to_index(1,0, RIGHT),
-                          xy_to_index(1,1, RIGHT),
-                          xy_to_index(4,13, RIGHT),
-                          xy_to_index(5,13, RIGHT),
-                          xy_to_index(6,13, RIGHT),
-                          xy_to_index(5,12, RIGHT),
-                          xy_to_index(5,11, RIGHT),
-                          xy_to_index(8,9, RIGHT),
-                          xy_to_index(8,10, RIGHT),
-                          xy_to_index(8,11, RIGHT),
-                          xy_to_index(8,12, RIGHT),
-                          xy_to_index(12,11, RIGHT),
-                          xy_to_index(12,12, RIGHT),
-                          xy_to_index(12,13, RIGHT),
-                          xy_to_index(10,2, RIGHT),
-                          xy_to_index(11,2, RIGHT),
-                          xy_to_index(12,2, RIGHT),
-                          xy_to_index(13,2, RIGHT),
-                          xy_to_index(14,2, RIGHT)}, 
-0, /*(Cord *)malloc(0)*/{0,0}, 0};
+}
+}
+
+
+
+Player left = randomize_player_ship_layout(LEFT)
+Player right = randomize_player_ship_layout(RIGHT);
 
 void plus_score(bool active){
   if(active == LEFT){
@@ -274,267 +489,6 @@ void setup(){
 
 }
 
-Player randomize_player_ship_layout(bool side) {
-  switch (random(10))
-  {
-  case 0:
-    return (Player){{xy_to_index(0,1, side),
-    xy_to_index(0,2, side),
-    xy_to_index(0,3, side),
-    xy_to_index(0,4, side),
-    xy_to_index(0,5, side),
-    xy_to_index(2,9, side),
-    xy_to_index(2,10, side),
-    xy_to_index(2,11, side),
-    xy_to_index(2,12, side),
-    xy_to_index(5,8, side),
-    xy_to_index(6,8, side),
-    xy_to_index(7,8, side),
-    xy_to_index(7,0, side),
-    xy_to_index(8,0, side),
-    xy_to_index(9,0, side),
-    xy_to_index(11,3, side),
-    xy_to_index(11,4, side),
-    xy_to_index(12,12, side),
-    xy_to_index(13,12, side),
-    xy_to_index(14,12, side),
-    xy_to_index(14,13, side),
-    xy_to_index(14,14, side)},0,{0,0},0};
-    break;
-  case 1:
-    return (Player) {{xy_to_index(1,0, side),
-    xy_to_index(2,0, side),
-    xy_to_index(3,0, side),
-    xy_to_index(4,0, side),
-    xy_to_index(3,8, side),
-    xy_to_index(3,9, side),
-    xy_to_index(4,14, side),
-    xy_to_index(5,14, side),
-    xy_to_index(6,14, side),
-    xy_to_index(6,13, side),
-    xy_to_index(6,12, side),
-    xy_to_index(7,2, side),
-    xy_to_index(8,2, side),
-    xy_to_index(9,2, side),
-    xy_to_index(11,14, side),
-    xy_to_index(11,13, side),
-    xy_to_index(11,12, side),
-    xy_to_index(15,8, side),
-    xy_to_index(15,9, side),
-    xy_to_index(15,10, side),
-    xy_to_index(15,11, side),
-    xy_to_index(15,12, side)},0,{0,0},0};
-    break;
-  case 2:
-    /* code */
-    return (Player){{xy_to_index(0,13, side),
-    xy_to_index(0,14, side),
-    xy_to_index(0,15, side),
-    xy_to_index(1,15, side),
-    xy_to_index(2,15, side),
-    xy_to_index(1,0, side),
-    xy_to_index(2,0, side),
-    xy_to_index(3,8, side),
-    xy_to_index(4,8, side),
-    xy_to_index(5,8, side),
-    xy_to_index(6,8, side),
-    xy_to_index(8,12, side),
-    xy_to_index(8,13, side),
-    xy_to_index(8,14, side),
-    xy_to_index(11,4, side),
-    xy_to_index(11,5, side),
-    xy_to_index(11,6, side),
-    xy_to_index(15,15, side),
-    xy_to_index(15,14, side),
-    xy_to_index(15,13, side),
-    xy_to_index(15,12, side),
-    xy_to_index(15,11, side)},0,{0,0},0};
-    break;
-  case 3:
-    return (Player){{
-    xy_to_index(2,5, side),
-    xy_to_index(2,6, side),
-    xy_to_index(2,7, side),
-    xy_to_index(3,5, side),
-    xy_to_index(4,5, side),
-    xy_to_index(10,9, side),
-    xy_to_index(10,10, side),
-    xy_to_index(10,11, side),
-    xy_to_index(10,12, side),
-    xy_to_index(10,13, side),
-    xy_to_index(5,12, side),
-    xy_to_index(5,13, side),
-    xy_to_index(5,14, side),
-    xy_to_index(6,4, side),
-    xy_to_index(7,4, side),
-    xy_to_index(10,1, side),
-    xy_to_index(11,1, side),
-    xy_to_index(12,1, side),
-    xy_to_index(12,7, side),
-    xy_to_index(13,7, side),
-    xy_to_index(14,7, side),
-    xy_to_index(15,7, side)},0,{0,0},0};
-    break;
-  case 4:
-    return (Player){{
-    xy_to_index(1,12, side),
-    xy_to_index(1,13, side),
-    xy_to_index(1,3, side),
-    xy_to_index(2,3, side),
-    xy_to_index(3,3, side),
-    xy_to_index(5,8, side),
-    xy_to_index(6,8, side),
-    xy_to_index(7,8, side),
-    xy_to_index(7,9, side),
-    xy_to_index(7,10, side),
-    xy_to_index(11,11, side),
-    xy_to_index(11,12, side),
-    xy_to_index(11,13, side),
-    xy_to_index(11,14, side),
-    xy_to_index(11,15, side),
-    xy_to_index(10,1, side),
-    xy_to_index(11,1, side),
-    xy_to_index(12,1, side),
-    xy_to_index(12,6, side),
-    xy_to_index(13,6, side),
-    xy_to_index(14,6, side),
-    xy_to_index(15,6, side)},0,{0,0},0};
-    break;
-  case 5:
-    return  (Player){{
-    xy_to_index(0,0, side),
-    xy_to_index(1,0, side),
-    xy_to_index(2,0, side),
-    xy_to_index(3,0, side),
-    xy_to_index(15,0, side),
-    xy_to_index(15,1, side),
-    xy_to_index(15,2, side),
-    xy_to_index(15,3, side),
-    xy_to_index(15,4, side),
-    xy_to_index(9,5, side),
-    xy_to_index(9,6, side),
-    xy_to_index(1,11, side),
-    xy_to_index(1,10, side),
-    xy_to_index(1,12, side),
-    xy_to_index(2,12, side),
-    xy_to_index(3,12, side),
-    xy_to_index(6,12, side),
-    xy_to_index(7,12, side),
-    xy_to_index(8,12, side),
-    xy_to_index(10,15, side),
-    xy_to_index(11,15, side),
-    xy_to_index(12,15, side)},0,{0,0},0};
-    break;
-  case 6:
-    return (Player){{ xy_to_index(0,6, side),
-    xy_to_index(1,6, side),
-    xy_to_index(2,6, side),
-    xy_to_index(1,0, side),
-    xy_to_index(1,1, side),
-    xy_to_index(4,13, side),
-    xy_to_index(5,13, side),
-    xy_to_index(6,13, side),
-    xy_to_index(5,12, side),
-    xy_to_index(5,11, side),
-    xy_to_index(8,9, side),
-    xy_to_index(8,10, side),
-    xy_to_index(8,11, side),
-    xy_to_index(8,12, side),
-    xy_to_index(12,11, side),
-    xy_to_index(12,12, side),
-    xy_to_index(12,13, side),
-    xy_to_index(10,2, side),
-    xy_to_index(11,2, side),
-    xy_to_index(12,2, side),
-    xy_to_index(13,2, side),
-    xy_to_index(14,2, side)},0,{0,0},0};
-    break;
-  case 7:
-    /* code */
-    return (Player){{
-    xy_to_index(0,0, side),
-    xy_to_index(0,1, side),
-    xy_to_index(0,2, side),
-    xy_to_index(0,3, side),
-    xy_to_index(0,4, side),
-    xy_to_index(3,8, side),
-    xy_to_index(4,8, side),
-    xy_to_index(5,8, side),
-    xy_to_index(0,15, side),
-    xy_to_index(1,15, side),
-    xy_to_index(2,15, side),
-    xy_to_index(8,8, side),
-    xy_to_index(8,7, side),
-    xy_to_index(8,6, side),
-    xy_to_index(9,6, side),
-    xy_to_index(10,6, side),
-    xy_to_index(15,15, side),
-    xy_to_index(14,15, side),
-    xy_to_index(13,15, side),
-    xy_to_index(12,15, side),
-    xy_to_index(15,0, side),
-    xy_to_index(14,0, side)},0,{0,0},0};
-    break;
-  case 8:
-    /* code */
-    return  (Player){{
-    xy_to_index(1,11, side),
-    xy_to_index(1,12, side),
-    xy_to_index(1,13, side),
-    xy_to_index(1,14, side),
-    xy_to_index(2,2, side),
-    xy_to_index(2,3, side),
-    xy_to_index(2,4, side),
-    xy_to_index(5,11, side),
-    xy_to_index(5,12, side),
-    xy_to_index(5,13, side),
-    xy_to_index(4,13, side),
-    xy_to_index(3,13, side),
-    xy_to_index(9,2, side),
-    xy_to_index(9,3, side),
-    xy_to_index(9,4, side),
-    xy_to_index(10,11, side),
-    xy_to_index(11,11, side),
-    xy_to_index(11,4, side),
-    xy_to_index(12,4, side),
-    xy_to_index(13,4, side),
-    xy_to_index(14,4, side),
-    xy_to_index(15,4, side)},0,{0,0},0};
-    break;
-  case 9:
-    /* code */
-    return (Player){{
-    xy_to_index(1,3, side),
-    xy_to_index(1,4, side),
-    xy_to_index(1,5, side),
-    xy_to_index(3,0, side),
-    xy_to_index(3,1, side),
-    xy_to_index(3,2, side),
-    xy_to_index(3,3, side),
-    xy_to_index(3,4, side),
-    xy_to_index(9,11, side),
-    xy_to_index(9,12, side),
-    xy_to_index(9,13, side),
-    xy_to_index(8,13, side),
-    xy_to_index(7,13, side),
-    xy_to_index(6,3, side),
-    xy_to_index(7,3, side),
-    xy_to_index(1,13, side),
-    xy_to_index(2,13, side),
-    xy_to_index(3,13, side),
-    xy_to_index(11,5, side),
-    xy_to_index(12,5, side),
-    xy_to_index(13,5, side),
-    xy_to_index(14,5, side)},0,{0,0},0};
-    break;
-
-  }
-  
-}
-
-
-left = randomize_player_ship_layout(LEFT);
-right  = randomize_player_ship_layout(RIGHT);
 
 
 void loop(){
