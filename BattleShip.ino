@@ -143,7 +143,7 @@ typedef struct Player {
   Cord shots[20];
   int num_shots;
 } Player;
-Player randomize_player_ship_layout(bool side) {
+struct Player randomize_player_ship_layout(bool side) {
 switch (random(10))
 {
 case 0:
@@ -396,13 +396,35 @@ case 9:
   xy_to_index(13,5, side),
   xy_to_index(14,5, side)},0,{0,0},0};
   break;
-
 }
+return (Player){{
+  xy_to_index(1,3, side),
+  xy_to_index(1,4, side),
+  xy_to_index(1,5, side),
+  xy_to_index(3,0, side),
+  xy_to_index(3,1, side),
+  xy_to_index(3,2, side),
+  xy_to_index(3,3, side),
+  xy_to_index(3,4, side),
+  xy_to_index(9,11, side),
+  xy_to_index(9,12, side),
+  xy_to_index(9,13, side),
+  xy_to_index(8,13, side),
+  xy_to_index(7,13, side),
+  xy_to_index(6,3, side),
+  xy_to_index(7,3, side),
+  xy_to_index(1,13, side),
+  xy_to_index(2,13, side),
+  xy_to_index(3,13, side),
+  xy_to_index(11,5, side),
+  xy_to_index(12,5, side),
+  xy_to_index(13,5, side),
+  xy_to_index(14,5, side)},0,{0,0},0};
 }
 
 
 
-Player left = randomize_player_ship_layout(LEFT)
+Player left = randomize_player_ship_layout(LEFT);
 Player right = randomize_player_ship_layout(RIGHT);
 
 void plus_score(bool active){
