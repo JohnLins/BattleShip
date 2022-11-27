@@ -1,4 +1,5 @@
- #include "FastLED.h"
+#include "FastLED.h"
+#include "randShips.h"
 
 #define NUM_LEDS (256*2)
 #define LED_PIN 11
@@ -50,8 +51,11 @@ int cur_y = 0;
 #define RIGHT 1
 
 
-
 bool active = LEFT;
+
+bool first_iter = 1;
+
+
 
 
 void fill_side(bool side, CRGB color){
@@ -95,31 +99,29 @@ int xy_to_index(int x, int y, bool side){
 
 void writeDigit ( int value , int digit )
 {
-    digitalWrite ( digit0pin , HIGH );
-    digitalWrite ( digit1pin , HIGH );
-    digitalWrite ( digit2pin , HIGH );
-    digitalWrite ( digit3pin , HIGH );
-    digitalWrite ( latchPin , LOW );
-    shiftOut ( dataPin , clockPin , MSBFIRST , digit2segments [ value ]);
-    digitalWrite ( latchPin , HIGH );
-    switch ( digit ) {
-      case 0:
-      digitalWrite ( digit0pin , LOW );
-      break ;
-      case 1:
-      digitalWrite ( digit1pin , LOW );
-      break ;
-      case 2:
-      digitalWrite ( digit2pin , LOW );
-      break ;
-      case 3:
-      digitalWrite ( digit3pin , LOW );
-      break ;
-    }
-    delay (10);
+  digitalWrite ( digit0pin , HIGH );
+  digitalWrite ( digit1pin , HIGH );
+  digitalWrite ( digit2pin , HIGH );
+  digitalWrite ( digit3pin , HIGH );
+  digitalWrite ( latchPin , LOW );
+  shiftOut ( dataPin , clockPin , MSBFIRST , digit2segments [ value ]);
+  digitalWrite ( latchPin , HIGH );
+  switch ( digit ) {
+    case 0:
+    digitalWrite ( digit0pin , LOW );
+    break ;
+    case 1:
+    digitalWrite ( digit1pin , LOW );
+    break ;
+    case 2:
+    digitalWrite ( digit2pin , LOW );
+    break ;
+    case 3:
+    digitalWrite ( digit3pin , LOW );
+    break ;
+  }
+  delay (10);
 }
-
-
 
 
 
@@ -129,9 +131,6 @@ typedef struct Joy {
   bool fire;
 } Joy;
 
-
-
-
 typedef struct Cord {
   int index;
   CRGB color;
@@ -140,55 +139,15 @@ typedef struct Player {
   int ships[NUM_SHIP_PIX];
   int score;
   //Cord *shots;// = (Cord *)malloc(0);
-  Cord shots[20];
+  Cord shots[256];
   int num_shots;
 } Player;
 
-Player left = (Player){{xy_to_index(0,1, LEFT),
-                          xy_to_index(0,2, LEFT),
-                          xy_to_index(0,3, LEFT),
-                          xy_to_index(0,4, LEFT),
-                          xy_to_index(0,5, LEFT),
-                          xy_to_index(2,9, LEFT),
-                          xy_to_index(2,10, LEFT),
-                          xy_to_index(2,11, LEFT),
-                          xy_to_index(2,12, LEFT),
-                          xy_to_index(5,8, LEFT),
-                          xy_to_index(6,8, LEFT),
-                          xy_to_index(7,8, LEFT),
-                          xy_to_index(7,0, LEFT),
-                          xy_to_index(8,0, LEFT),
-                          xy_to_index(9,0, LEFT),
-                          xy_to_index(11,3, LEFT),
-                          xy_to_index(11,4, LEFT),
-                          xy_to_index(12,12, LEFT),
-                          xy_to_index(13,12, LEFT),
-                          xy_to_index(14,12, LEFT),
-                          xy_to_index(14,13, LEFT),
-                          xy_to_index(14,14, LEFT)}, 0, /*(Cord *)malloc(0)*/{0,0}, 0};
-Player right = (Player){{ xy_to_index(0,6, RIGHT),
-                          xy_to_index(1,6, RIGHT),
-                          xy_to_index(2,6, RIGHT),
-                          xy_to_index(1,0, RIGHT),
-                          xy_to_index(1,1, RIGHT),
-                          xy_to_index(4,13, RIGHT),
-                          xy_to_index(5,13, RIGHT),
-                          xy_to_index(6,13, RIGHT),
-                          xy_to_index(5,12, RIGHT),
-                          xy_to_index(5,11, RIGHT),
-                          xy_to_index(8,9, RIGHT),
-                          xy_to_index(8,10, RIGHT),
-                          xy_to_index(8,11, RIGHT),
-                          xy_to_index(8,12, RIGHT),
-                          xy_to_index(12,11, RIGHT),
-                          xy_to_index(12,12, RIGHT),
-                          xy_to_index(12,13, RIGHT),
-                          xy_to_index(10,2, RIGHT),
-                          xy_to_index(11,2, RIGHT),
-                          xy_to_index(12,2, RIGHT),
-                          xy_to_index(13,2, RIGHT),
-                          xy_to_index(14,2, RIGHT)}, 
-0, /*(Cord *)malloc(0)*/{0,0}, 0};
+Joy joy = (Joy){0,0,0};
+Player left;
+Player right;
+
+
 
 void plus_score(bool active){
   if(active == LEFT){
@@ -199,53 +158,31 @@ void plus_score(bool active){
 }
 
 void add_shot(bool active, int index, bool hit){
-  Serial.print("......\n");
-Serial.print(hit);
-  Serial.print("......\n");
 if(active == LEFT){
   left.num_shots++;
   
   //left.shots = (Cord *)realloc(left.shots, sizeof(Cord)*left.num_shots);
   
   if(hit){
-      left.shots[left.num_shots-1] = Cord{index, CRGB::Red};
+    left.shots[left.num_shots-1] = Cord{index, CRGB::Red};
   } else{
-      left.shots[left.num_shots-1] = Cord{index, CRGB::Green};
-    }
+    left.shots[left.num_shots-1] = Cord{index, CRGB::Green};
+  }
 } else {
   right.num_shots++;
   //right.shots = (Cord *)realloc(right.shots, sizeof(Cord)*right.num_shots);
 
   if(hit){
-      right.shots[right.num_shots-1] = Cord{index, CRGB::Red};
+    right.shots[right.num_shots-1] = Cord{index, CRGB::Red};
   } else{
-      right.shots[right.num_shots-1] = Cord{index, CRGB::Green};
-    }
+    right.shots[right.num_shots-1] = Cord{index, CRGB::Green};
+  }
 }
 }
   
-
-
-Joy joy = (Joy){0,0,0};
 
 void setup(){
-
-
-   
-  
-//left.ships = {xy_to_index(1,0, LEFT),
-//xy_to_index(0,1, LEFT),
-//xy_to_index(0,2, LEFT),
-//xy_to_index(0,3, LEFT),
-//xy_to_index(0,4, LEFT),
-//xy_to_index(0,5, LEFT)};
-//
-//
-//right.ships   = ;
-
-
-  
- 
+  randomSeed(analogRead(A3));
   pinMode(buzzer, OUTPUT); 
 
 
@@ -271,11 +208,16 @@ void setup(){
   pinMode ( digit2pin , OUTPUT );
   pinMode ( digit3pin , OUTPUT );
 
-
+ delay(2000);
 }
 
-
 void loop(){
+
+  if(first_iter){
+    left = randomize_player_ship_layout(LEFT);
+    right = randomize_player_ship_layout(RIGHT);
+    first_iter = 0;
+  }
 
 
 int t = left.score * 100 + right.score;
@@ -329,10 +271,10 @@ if(active == LEFT){
       plus_score(active);
       add_shot(active, xy_to_index(cur_x, cur_y, active), 1); 
       
-        for(int i = 0; i < 5000; i++){
-          tone(buzzer, 2000);
-        }
-        noTone(buzzer);
+      for(int i = 0; i < 5000; i++){
+        tone(buzzer, 2000);
+      }
+      noTone(buzzer);
     }else {
       add_shot(active, xy_to_index(cur_x, cur_y, active), 0); 
       Serial.print("MISS");
@@ -358,11 +300,11 @@ if(active == LEFT){
 
 
   
-  if(right.score == 10 || left.score == 10){
-     for(int i = 0; i < 5000; i++){
-          tone(buzzer, 2000);
-        }
-        noTone(buzzer);
+  if(right.score == NUM_SHIP_PIX || left.score == NUM_SHIP_PIX){
+    for(int i = 0; i < 5000; i++){
+      tone(buzzer, 2000);
+    }
+    noTone(buzzer);
     fill_side(!active, CRGB::Red);
     fill_side(active, CRGB::Green);
    
@@ -375,31 +317,280 @@ if(active == LEFT){
   joy.x = analogRead(X_JOY);
   joy.y = analogRead(Y_JOY);
   if(active == LEFT){
-      joy.fire = !digitalRead(SW_JOY_LEFT);
+    joy.fire = !digitalRead(SW_JOY_LEFT);
   } else {
     joy.fire = !digitalRead(SW_JOY_RIGHT);
   }
 
-
-
-    if(false){
-     for(int i = 0; i < 5000; i++){
-    
-     tone(buzzer, 400);
-     }
-     delay(2000);
-      for(int i = 0; i < 5000; i++){
-          tone(buzzer, 2000);
-     }
-     
-     noTone(buzzer);
-    }
-
-
-    if(joy.y > 600 && cur_y > 0) {cur_y --; }
-    if(joy.y < 400 && cur_y < 15) {cur_y ++; }
-    if(joy.x > 600 && cur_x < 15) {cur_x ++; }
-    if(joy.x < 400 && cur_x > 0) {cur_x --; }
+  if(joy.y > 600 && cur_y > 0) {cur_y --; }
+  if(joy.y < 400 && cur_y < 15) {cur_y ++; }
+  if(joy.x > 600 && cur_x < 15) {cur_x ++; }
+  if(joy.x < 400 && cur_x > 0) {cur_x --; }
 
  
+}
+
+
+
+
+
+struct Player randomize_player_ship_layout(bool side) {
+  int ran = random(10);
+  Serial.print(ran);
+  Player player;
+  
+ 
+  switch (ran){
+  case 0:
+    player = (Player){{xy_to_index(0,1, side),
+    xy_to_index(0,2, side),
+    xy_to_index(0,3, side),
+    xy_to_index(0,4, side),
+    xy_to_index(0,5, side),
+    xy_to_index(2,9, side),
+    xy_to_index(2,10, side),
+    xy_to_index(2,11, side),
+    xy_to_index(2,12, side),
+    xy_to_index(5,8, side),
+    xy_to_index(6,8, side),
+    xy_to_index(7,8, side),
+    xy_to_index(7,0, side),
+    xy_to_index(8,0, side),
+    xy_to_index(9,0, side),
+    xy_to_index(11,3, side),
+    xy_to_index(11,4, side),
+    xy_to_index(12,12, side),
+    xy_to_index(13,12, side),
+    xy_to_index(14,12, side),
+    xy_to_index(14,13, side),
+    xy_to_index(14,14, side)},0,{0,0},0};
+    break;
+  case 1:
+    player = (Player) {{xy_to_index(1,0, side),
+    xy_to_index(2,0, side),
+    xy_to_index(3,0, side),
+    xy_to_index(4,0, side),
+    xy_to_index(3,8, side),
+    xy_to_index(3,9, side),
+    xy_to_index(4,14, side),
+    xy_to_index(5,14, side),
+    xy_to_index(6,14, side),
+    xy_to_index(6,13, side),
+    xy_to_index(6,12, side),
+    xy_to_index(7,2, side),
+    xy_to_index(8,2, side),
+    xy_to_index(9,2, side),
+    xy_to_index(11,14, side),
+    xy_to_index(11,13, side),
+    xy_to_index(11,12, side),
+    xy_to_index(15,8, side),
+    xy_to_index(15,9, side),
+    xy_to_index(15,10, side),
+    xy_to_index(15,11, side),
+    xy_to_index(15,12, side)},0,{0,0},0};
+    break;
+  case 2:
+    /* code */
+    player = (Player){{xy_to_index(0,13, side),
+    xy_to_index(0,14, side),
+    xy_to_index(0,15, side),
+    xy_to_index(1,15, side),
+    xy_to_index(2,15, side),
+    xy_to_index(1,0, side),
+    xy_to_index(2,0, side),
+    xy_to_index(3,8, side),
+    xy_to_index(4,8, side),
+    xy_to_index(5,8, side),
+    xy_to_index(6,8, side),
+    xy_to_index(8,12, side),
+    xy_to_index(8,13, side),
+    xy_to_index(8,14, side),
+    xy_to_index(11,4, side),
+    xy_to_index(11,5, side),
+    xy_to_index(11,6, side),
+    xy_to_index(15,15, side),
+    xy_to_index(15,14, side),
+    xy_to_index(15,13, side),
+    xy_to_index(15,12, side),
+    xy_to_index(15,11, side)},0,{0,0},0};
+    break;
+  case 3:
+    player = (Player){{
+    xy_to_index(2,5, side),
+    xy_to_index(2,6, side),
+    xy_to_index(2,7, side),
+    xy_to_index(3,5, side),
+    xy_to_index(4,5, side),
+    xy_to_index(10,9, side),
+    xy_to_index(10,10, side),
+    xy_to_index(10,11, side),
+    xy_to_index(10,12, side),
+    xy_to_index(10,13, side),
+    xy_to_index(5,12, side),
+    xy_to_index(5,13, side),
+    xy_to_index(5,14, side),
+    xy_to_index(6,4, side),
+    xy_to_index(7,4, side),
+    xy_to_index(10,1, side),
+    xy_to_index(11,1, side),
+    xy_to_index(12,1, side),
+    xy_to_index(12,7, side),
+    xy_to_index(13,7, side),
+    xy_to_index(14,7, side),
+    xy_to_index(15,7, side)},0,{0,0},0};
+    break;
+  case 4:
+    player = (Player){{
+    xy_to_index(1,12, side),
+    xy_to_index(1,13, side),
+    xy_to_index(1,3, side),
+    xy_to_index(2,3, side),
+    xy_to_index(3,3, side),
+    xy_to_index(5,8, side),
+    xy_to_index(6,8, side),
+    xy_to_index(7,8, side),
+    xy_to_index(7,9, side),
+    xy_to_index(7,10, side),
+    xy_to_index(11,11, side),
+    xy_to_index(11,12, side),
+    xy_to_index(11,13, side),
+    xy_to_index(11,14, side),
+    xy_to_index(11,15, side),
+    xy_to_index(10,1, side),
+    xy_to_index(11,1, side),
+    xy_to_index(12,1, side),
+    xy_to_index(12,6, side),
+    xy_to_index(13,6, side),
+    xy_to_index(14,6, side),
+    xy_to_index(15,6, side)},0,{0,0},0};
+    break;
+  case 5:
+    player =  (Player){{
+    xy_to_index(0,0, side),
+    xy_to_index(1,0, side),
+    xy_to_index(2,0, side),
+    xy_to_index(3,0, side),
+    xy_to_index(15,0, side),
+    xy_to_index(15,1, side),
+    xy_to_index(15,2, side),
+    xy_to_index(15,3, side),
+    xy_to_index(15,4, side),
+    xy_to_index(9,5, side),
+    xy_to_index(9,6, side),
+    xy_to_index(1,11, side),
+    xy_to_index(1,10, side),
+    xy_to_index(1,12, side),
+    xy_to_index(2,12, side),
+    xy_to_index(3,12, side),
+    xy_to_index(6,12, side),
+    xy_to_index(7,12, side),
+    xy_to_index(8,12, side),
+    xy_to_index(10,15, side),
+    xy_to_index(11,15, side),
+    xy_to_index(12,15, side)},0,{0,0},0};
+    break;
+  case 6:
+    player = (Player){{ xy_to_index(0,6, side),
+    xy_to_index(1,6, side),
+    xy_to_index(2,6, side),
+    xy_to_index(1,0, side),
+    xy_to_index(1,1, side),
+    xy_to_index(4,13, side),
+    xy_to_index(5,13, side),
+    xy_to_index(6,13, side),
+    xy_to_index(5,12, side),
+    xy_to_index(5,11, side),
+    xy_to_index(8,9, side),
+    xy_to_index(8,10, side),
+    xy_to_index(8,11, side),
+    xy_to_index(8,12, side),
+    xy_to_index(12,11, side),
+    xy_to_index(12,12, side),
+    xy_to_index(12,13, side),
+    xy_to_index(10,2, side),
+    xy_to_index(11,2, side),
+    xy_to_index(12,2, side),
+    xy_to_index(13,2, side),
+    xy_to_index(14,2, side)},0,{0,0},0};
+    break;
+  case 7:
+    /* code */
+    player = (Player){{
+    xy_to_index(0,0, side),
+    xy_to_index(0,1, side),
+    xy_to_index(0,2, side),
+    xy_to_index(0,3, side),
+    xy_to_index(0,4, side),
+    xy_to_index(3,8, side),
+    xy_to_index(4,8, side),
+    xy_to_index(5,8, side),
+    xy_to_index(0,15, side),
+    xy_to_index(1,15, side),
+    xy_to_index(2,15, side),
+    xy_to_index(8,8, side),
+    xy_to_index(8,7, side),
+    xy_to_index(8,6, side),
+    xy_to_index(9,6, side),
+    xy_to_index(10,6, side),
+    xy_to_index(15,15, side),
+    xy_to_index(14,15, side),
+    xy_to_index(13,15, side),
+    xy_to_index(12,15, side),
+    xy_to_index(15,0, side),
+    xy_to_index(14,0, side)},0,{0,0},0};
+    break;
+  case 8:
+    /* code */
+    player =  (Player){{
+    xy_to_index(1,11, side),
+    xy_to_index(1,12, side),
+    xy_to_index(1,13, side),
+    xy_to_index(1,14, side),
+    xy_to_index(2,2, side),
+    xy_to_index(2,3, side),
+    xy_to_index(2,4, side),
+    xy_to_index(5,11, side),
+    xy_to_index(5,12, side),
+    xy_to_index(5,13, side),
+    xy_to_index(4,13, side),
+    xy_to_index(3,13, side),
+    xy_to_index(9,2, side),
+    xy_to_index(9,3, side),
+    xy_to_index(9,4, side),
+    xy_to_index(10,11, side),
+    xy_to_index(11,11, side),
+    xy_to_index(11,4, side),
+    xy_to_index(12,4, side),
+    xy_to_index(13,4, side),
+    xy_to_index(14,4, side),
+    xy_to_index(15,4, side)},0,{0,0},0};
+    break;
+  case 9:
+    /* code */
+    player = (Player){{
+    xy_to_index(1,3, side),
+    xy_to_index(1,4, side),
+    xy_to_index(1,5, side),
+    xy_to_index(3,0, side),
+    xy_to_index(3,1, side),
+    xy_to_index(3,2, side),
+    xy_to_index(3,3, side),
+    xy_to_index(3,4, side),
+    xy_to_index(9,11, side),
+    xy_to_index(9,12, side),
+    xy_to_index(9,13, side),
+    xy_to_index(8,13, side),
+    xy_to_index(7,13, side),
+    xy_to_index(6,3, side),
+    xy_to_index(7,3, side),
+    xy_to_index(1,13, side),
+    xy_to_index(2,13, side),
+    xy_to_index(3,13, side),
+    xy_to_index(11,5, side),
+    xy_to_index(12,5, side),
+    xy_to_index(13,5, side),
+    xy_to_index(14,5, side)},0,{0,0},0};
+    break;
+  }
+  return player;
 }
