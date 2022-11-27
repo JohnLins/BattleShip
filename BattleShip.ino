@@ -1,5 +1,4 @@
 #include "FastLED.h"
-#include "randShips.h"
 
 #define NUM_LEDS (256*2)
 #define LED_PIN 11
