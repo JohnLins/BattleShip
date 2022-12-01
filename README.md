@@ -1,3 +1,4 @@
 # BattleShip
 
-<img src="scem.png"/>
+<img src="assets/scem.png"/>
+<img src="assets/poster.jpg"/>

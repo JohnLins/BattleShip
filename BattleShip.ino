@@ -207,7 +207,7 @@ void setup(){
   pinMode ( digit2pin , OUTPUT );
   pinMode ( digit3pin , OUTPUT );
 
- delay(2000);
+ delay(200);
 }
 
 void loop(){
@@ -316,9 +316,9 @@ if(active == LEFT){
   joy.x = analogRead(X_JOY);
   joy.y = analogRead(Y_JOY);
   if(active == LEFT){
-    joy.fire = !digitalRead(SW_JOY_LEFT);
+    joy.fire = (last_value == CRGB(0x000000)) ? !digitalRead(SW_JOY_LEFT) : 0;
   } else {
-    joy.fire = !digitalRead(SW_JOY_RIGHT);
+    joy.fire = (last_value == CRGB(0x000000)) ? !digitalRead(SW_JOY_RIGHT) : 0;
   }
 
   if(joy.y > 600 && cur_y > 0) {cur_y --; }
